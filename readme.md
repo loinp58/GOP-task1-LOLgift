@@ -1,27 +1,45 @@
-# Laravel PHP Framework
+# Demo send gift LOL 
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+### Introduction
+This app is virtual system to send gift game LOL to user after they choose gift. When user access to page, they must login to go to main page. If they haven't choosen gift before, show them the page with gifts, they choose gift and wait for server send gift to their account. If they have choosen gift, system don't show the main page and have message to notify they must wait or check account.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+### Installation
+This installation is for Linux OS. For Window, some steps are different.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+To run this app, your server must have Apache, Mysql, PHP >= 5.5.9 and installed Composer.
 
-## Official Documentation
+Clone this repo:
+```sh
+$ git clone https://github.com/loinp58/GOP-task1-LOLgift.git
+```
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
+After git clone successfully, run command to download packages
 
-## Contributing
+```sh
+$ cd GOP-task1-LOLgift
+$ composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
+Copy file ```.env.example``` and rename to ```.env``` and run command to generate key for this app
 
-## Security Vulnerabilities
+```sh
+$ cp .env.example .env
+$ php artisan key:generate
+```
+Open editor file .env to config ```cache``` for using redis:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+```sh
+CACHE_DRIVER=redis
+SESSION_DRIVER=redis
+QUEUE_DRIVER=redis
+```
 
-## License
+Change ```DB_DATABASE```, ```DB_USERNAME```, ```DB_PASSWORD``` is your database name, username and password to login ```mysql``` server.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+To create table for database, run command and after that, run server
+
+```sh
+$ php artisan migrate
+$ php artisan serve
+Laravel development server started on http://localhost:8000/
+```
