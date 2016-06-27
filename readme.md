@@ -6,7 +6,15 @@ This app is virtual system to send gift game LOL to user after they choose gift.
 ### Installation
 This installation is for Linux OS. For Window, some steps are different.
 
-To run this app, your server must have Apache, Mysql, PHP >= 5.5.9 and installed Composer.
+To run this app, your server must have Apache, Mysql, PHP >= 5.5.9, Composer and Redis.
+```sh
+$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo apt-get install mysql-server php5-mysql
+$ sudo apt-get install php5 libapache2-mod-php5 php5-mcrypt
+$ curl -sS https://getcomposer.org/installer | php
+$ sudo apt-get install redis-server
+```
 
 Clone this repo:
 ```sh
