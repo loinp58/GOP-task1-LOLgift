@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Gifted extends Model
+class Gift extends Model
 {
-    protected $table = 'gifted';
+    protected $table = 'gifts';
 
     protected $fillable = [
-    	'uid', 'gift', 'state'
+        'uid', 'gift', 'state'
     ];
 }

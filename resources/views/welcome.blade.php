@@ -14,8 +14,9 @@
                             <div class="caption">
                                 <h3>Trang phục</h3>
                                 <p>
-                                    <form action="{{route('gift.store', 1)}}" method="POST">
+                                    <form action="{{route('gift.store')}}" method="POST">
                                         {{ csrf_field() }}
+                                        <input type="hidden" value="1" name="gift_id">
                                         <button class="btn btn-primary">Nhận</button>
                                     </form> 
                                 </p>
@@ -29,8 +30,9 @@
                             <div class="caption">
                                 <h3>IP boost x5</h3>
                                 <p>
-                                    <form action="{{route('gift.store', 2)}}" method="POST">
+                                    <form action="{{route('gift.store')}}" method="POST">
                                         {{ csrf_field() }}
+                                        <input type="hidden" value="2" name="gift_id">
                                         <button class="btn btn-primary">Nhận</button>
                                     </form>  
                                 </p>
@@ -44,8 +46,9 @@
                             <div class="caption">
                                 <h3>6300 IP</h3>
                                 <p>
-                                    <form action="{{route('gift.store', 3)}}" method="POST">
+                                    <form action="{{route('gift.store')}}" method="POST">
                                         {{ csrf_field() }}
+                                        <input type="hidden" value="3" name="gift_id">
                                         <button class="btn btn-primary">Nhận</button>
                                     </form> 
                                 </p>

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGiftedTable extends Migration
+class CreateGiftsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,15 @@ class CreateGiftedTable extends Migration
      */
     public function up()
     {
-        Schema::create('gifted', function (Blueprint $table) {
+        Schema::create('gifts', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('uid');
+            $table->integer('uid')->unique()->unsigned();
             $table->integer('gift');
-            $table->integer('state')->default('0');
+            $table->smallInteger('state')->default(0);
+            $table->foreign('uid')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ class CreateGiftedTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gifted');
+        Schema::drop('gifts');
     }
 }

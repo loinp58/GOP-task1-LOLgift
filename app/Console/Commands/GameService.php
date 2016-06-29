@@ -4,10 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Log;
+use Mockery\CountValidator\Exception;
 use Redis;
-use App\Gifted;
+use App\Gift;
 use App\User;
 use GuzzleHttp\Client;
+use DB;
 
 class GameService extends Command
 {
@@ -35,13 +37,13 @@ class GameService extends Command
         parent::__construct();
     }
 
-    private function postAPI($url, $id, $gift)
+    private function postAPI($uid, $gift)
     {
-        $data = ['userId' => $id, 'gift' => $gift];
+        $host = 'http://192.168.33.10:8000';
+        $data = ['userId' => $uid, 'gift' => $gift];
         $client = new Client;
-        $res = $client->request('GET', $url, ['json' => $data]);
-        Log::info($res->getStatusCode());
-        return $res->getStatusCode();
+        $res = $client->request('GET', $host.'/api', ['json' => $data]);
+        return $res;
     }
 
     /**
@@ -51,22 +53,46 @@ class GameService extends Command
      */
     public function handle()
     {
-        $all = Redis::hgetall('gift');
-        $count = 0;
-        foreach($all as $id => $gift) {
-            $count++;
-            if ($count >= 5) break;
-            $response = $this->postAPI(env('API_URL'), $id, $gift);
-            if ($response == 200) {
-                Gifted::create([
-                    'uid' => $id,
-                    'gift' => $gift,
-                    'state' => 1
-                ]);
-                Redis::hdel('gift', $id);
-                Redis::hset('receiveGift', $id, 2);
-                Log::info($id . ' : ' . $gift);
+        Log::info('-----Start------');
+        $count = 5;
+        for ($i = 0; $i < $count; $i++) {
+            $uid = Redis::lpop('receiveGift');
+            if (!$uid) return;
+            Log::info('UID: '.$uid);
+            $gift_id = Redis::hget('gift', $uid);
+            Log::info('GIFT: '.$gift_id);
+            $response = $this->postAPI($uid, $gift_id);
+            if (199 < $response->getStatusCode() && $response->getStatusCode() < 300) {
+                Log::info(" Updated for user has id = ".$uid." ".json_decode($response->getBody() ));
+                if (json_decode($response->getBody())) {
+                    try {
+                        Log::info('Update state gift of UID:' . $uid);
+                        Gift::where('uid', $uid)->update(['state' => 2]);
+                    } catch (Exception $ex) {
+                        Log::info($ex->getMessage());
+                    }
+                }
             }
+            else {
+                Redis::rpush('receiveGift', $uid);
+            }
+        }
+
+        if (!Redis::lindex('receiveGift', 0)) {
+            $this->checkSendGift();
+        }
+    }
+
+    public function checkSendGift() {
+        try {
+            Log::info("Run check Send");
+            $unSendGifts = Gift::where('state', '=', 0)->get();
+            foreach ($unSendGifts as $gift) {
+                Redis::hsetnx('gift', $gift->user_id, $gift->gift_id);
+                Redis::lpush('receiveGift', $gift->user_id);
+            }
+        } catch (Exception $ex) {
+            Log::info($ex->getMessage());
         }
     }
 }

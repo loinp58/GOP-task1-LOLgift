@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function() {
 		'as' => 'gift.index',
 		'uses' => 'GiftController@index'
 	]);
-	Route::post('/nhan-qua/{gift_id}', [
+	Route::post('/nhan-qua/', [
 		'as' => 'gift.store',
 		'uses' => 'GiftController@store'
 	]);
@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function() {
 
 Route::auth();
 
-Route::get('api', function() {
-	return 1;
-});
+Route::get('api', [
+	'as' => 'home.api',
+	'uses' => 'HomeController@api'
+]);
