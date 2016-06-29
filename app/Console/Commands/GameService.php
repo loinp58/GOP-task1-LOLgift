@@ -7,9 +7,7 @@ use Log;
 use Mockery\CountValidator\Exception;
 use Redis;
 use App\Gift;
-use App\User;
 use GuzzleHttp\Client;
-use DB;
 
 class GameService extends Command
 {
@@ -39,11 +37,11 @@ class GameService extends Command
 
     private function postAPI($uid, $gift)
     {
-        $host = 'http://192.168.33.10:8000';
+        // $host = 'http://192.168.33.10:8000';
         $data = ['userId' => $uid, 'gift' => $gift];
         $client = new Client;
-        $res = $client->request('GET', $host.'/api', ['json' => $data]);
-        return $res;
+        $response = $client->get("http://192.168.33.10:8000/api", ['json' => $data]);
+        return $response;
     }
 
     /**
@@ -62,11 +60,13 @@ class GameService extends Command
             $gift_id = Redis::hget('gift', $uid);
             Log::info('GIFT: '.$gift_id);
             $response = $this->postAPI($uid, $gift_id);
+            // Log::info(" Response API = ".$response->);               
+            Log::info(" Response for request = ".json_decode($response->getBody()));
+
             if (199 < $response->getStatusCode() && $response->getStatusCode() < 300) {
-                Log::info(" Updated for user has id = ".$uid." ".json_decode($response->getBody() ));
-                if (json_decode($response->getBody())) {
+                if (json_decode($response->getBody()) == "ok") {
                     try {
-                        Log::info('Update state gift of UID:' . $uid);
+                        Log::info('Update user of UID: ' . $uid);
                         Gift::where('uid', $uid)->update(['state' => 2]);
                     } catch (Exception $ex) {
                         Log::info($ex->getMessage());

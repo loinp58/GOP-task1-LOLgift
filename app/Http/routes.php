@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth', 'prefix' => '/'], function() {
 
 Route::auth();
 
-Route::get('api', [
+Route::get('/api', [
 	'as' => 'home.api',
 	'uses' => 'HomeController@api'
 ]);

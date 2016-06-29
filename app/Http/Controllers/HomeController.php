@@ -15,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => 'api']);
     }
 
     /**
@@ -30,7 +30,9 @@ class HomeController extends Controller
 
     public function api(Request $request)
     {
-        $sentState = rand(0, 1);
-        return $sentState == 0 ? Response::json('ok') : Response::json('fail');
+        if (rand(0, 1)==0) {
+            return Response::json("ok");
+        }
+        else return Response::json("fail");
     }
 }

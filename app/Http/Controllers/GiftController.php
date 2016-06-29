@@ -24,7 +24,9 @@ class GiftController extends Controller
 		}
 		else {
 			$gift = DB::table('gifts')->where('uid', $uid)->first();
-			$sentStatus = $gift->state;
+			if ($gift) {
+				$sentStatus = $gift->state;
+			}
 			//dd($sentStatus);
 		}
 
