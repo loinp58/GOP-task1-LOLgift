@@ -60,7 +60,7 @@ class GameService extends Command
             $gift_id = Redis::hget('gift', $uid);
             Log::info('GIFT: '.$gift_id);
             $response = $this->postAPI($uid, $gift_id);
-            // Log::info(" Response API = ".$response->);               
+            $sentGift = 0;
             Log::info(" Response for request = ".json_decode($response->getBody()));
 
             if (199 < $response->getStatusCode() && $response->getStatusCode() < 300) {
@@ -68,15 +68,19 @@ class GameService extends Command
                     try {
                         Log::info('Update user of UID: ' . $uid);
                         Gift::where('uid', $uid)->update(['state' => 2]);
+                        $sentGift = 1;
                     } catch (Exception $ex) {
                         Log::info($ex->getMessage());
                     }
                 }
             }
-            else {
+            if (!$sentGift) {
                 Redis::rpush('receiveGift', $uid);
             }
         }
+
+        Log::info('------End-------');
+
 
         if (!Redis::lindex('receiveGift', 0)) {
             $this->checkSendGift();
